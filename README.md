@@ -1,11 +1,11 @@
-# travel_list
+# Travel list
 A simple web application for travel planning and reporting.   
-Stack:  
-# Backend: 
+## Stack:  
+### Backend: 
 Node.js, Express, Sequelize, PostgreSQL, JWT, Multer   
 
-# Frontend: 
+### Frontend: 
 React, React Router, Material-UI, Axios
 
-# Tools: 
+### Tools: 
 Git, Postman, pgAdmin
