@@ -1,0 +1,102 @@
+{
+    "info": {
+        "name": "Travel Online API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:3000/api/health"
+            }
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:3000/api/auth/register",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"login\": \"test_user\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\",\n  \"country\": \"Russia\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:3000/api/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"login\": \"test_user\",\n  \"password\": \"password123\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Travels",
+            "item": [
+                {
+                    "name": "Create Travel",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:3000/api/travels",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"My Trip\",\n  \"description\": \"Amazing journey\",\n  \"country\": \"France\",\n  \"type\": \"planned\",\n  \"is_public\": true\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Travels",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:3000/api/travels/my",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Feed",
+            "item": [
+                {
+                    "name": "Get Feed",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:3000/api/feed"
+                    }
+                },
+                {
+                    "name": "Get Countries",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:3000/api/feed/countries"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "token",
+            "value": ""
+        }
+    ]
+}

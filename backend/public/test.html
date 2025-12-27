@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Travel Online - API Test</title>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .api-status {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .endpoint-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-family: monospace;
+        }
+
+        .endpoint {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .error {
+            color: #f44336;
+        }
+
+        .response-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Travel Online API</h1>
+            <p class="subtitle">Тестирование REST API для приложения путешествий</p>
+        </header>
+
+        <div class="api-status">
+            <p><span class="status-badge">API доступно</span> Сервер работает на <strong>http://localhost:3000</strong>
+            </p>
+            <p>Текущее время: <span id="current-time"></span></p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('endpoints')">📋 Эндпоинты</div>
+            <div class="tab" onclick="showTab('auth')">🔐 Авторизация</div>
+            <div class="tab" onclick="showTab('travels')">🗺️ Путешествия</div>
+            <div class="tab" onclick="showTab('feed')">🌍 Лента</div>
+        </div>
+
+        <div id="endpoints" class="tab-content active">
+            <div class="endpoints">
+                <div class="endpoint-card">
+                    <h3><span class="method">GET</span> /api/health</h3>
+                    <p>Проверка работоспособности API</p>
+                    <button onclick="testEndpoint('/health', 'GET')">Тестировать</button>
+                    <div id="result-health" class="result"></div>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3><span class="method">POST</span> /api/auth/register</h3>
+                    <p>Регистрация нового пользователя</p>
+                    <div class="endpoint">Content-Type: application/json</div>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3><span class="method">POST</span> /api/auth/login</h3>
+                    <p>Авторизация пользователя</p>
+                    <div class="endpoint">Content-Type: application/json</div>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3><span class="method">GET</span> /api/feed</h3>
+                    <p>Лента публичных путешествий</p>
+                    <div class="endpoint">Параметры: ?country=...&page=...&limit=...</div>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3><span class="method">POST</span> /api/travels</h3>
+                    <p>Создание путешествия</p>
+                    <div class="endpoint">Требуется: Authorization: Bearer {token}</div>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3><span class="method">GET</span> /api/travels/my</h3>
+                    <p>Мои путешествия</p>
+                    <div class="endpoint">Требуется: Authorization: Bearer {token}</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="auth" class="tab-content">
+            <div class="test-section">
+                <h2>Регистрация</h2>
+                <div class="form-group">
+                    <label for="reg-login">Логин:</label>
+                    <input type="text" id="reg-login" placeholder="test_user">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email:</label>
+                    <input type="email" id="reg-email" placeholder="test@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Пароль:</label>
+                    <input type="password" id="reg-password" placeholder="password123">
+                </div>
+                <div class="form-group">
+                    <label for="reg-name">Имя:</label>
+                    <input type="text" id="reg-name" placeholder="Иван Иванов">
+                </div>
+                <div class="form-group">
+                    <label for="reg-country">Страна:</label>
+                    <input type="text" id="reg-country" placeholder="Россия">
+                </div>
+                <button onclick="register()">Зарегистрироваться</button>
+                <div id="result-register" class="result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Вход</h2>
+                <div class="form-group">
+                    <label for="login-login">Логин:</label>
+                    <input type="text" id="login-login" placeholder="test_user">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль:</label>
+                    <input type="password" id="login-password" placeholder="password123">
+                </div>
+                <button onclick="login()">Войти</button>
+                <div id="result-login" class="result"></div>
+            </div>
+        </div>
+
+        <div id="travels" class="tab-content">
+            <div class="test-section">
+                <h2>Создание путешествия</h2>
+                <p><em>Требуется авторизация</em></p>
+                <div class="form-group">
+                    <label for="travel-title">Название:</label>
+                    <input type="text" id="travel-title" placeholder="Моё удивительное путешествие">
+                </div>
+                <div class="form-group">
+                    <label for="travel-description">Описание:</label>
+                    <textarea id="travel-description" rows="3" placeholder="Описание путешествия..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="travel-country">Страна:</label>
+                    <input type="text" id="travel-country" placeholder="Франция">
+                </div>
+                <div class="form-group">
+                    <label for="travel-type">Тип:</label>
+                    <select id="travel-type">
+                        <option value="planned">Запланированное</option>
+                        <option value="completed">Завершённое</option>
+                    </select>
+                </div>
+                <button onclick="createTravel()">Создать путешествие</button>
+                <div id="result-travel-create" class="result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Мои путешествия</h2>
+                <p><em>Требуется авторизация</em></p>
+                <button onclick="getMyTravels()">Получить мои путешествия</button>
+                <div id="result-my-travels" class="result"></div>
+            </div>
+        </div>
+
+        <div id="feed" class="tab-content">
+            <div class="test-section">
+                <h2>Лента путешествий</h2>
+                <div class="form-group">
+                    <label for="feed-country">Страна (фильтр):</label>
+                    <input type="text" id="feed-country" placeholder="Оставьте пустым для всех стран">
+                </div>
+                <div class="form-group">
+                    <label for="feed-limit">Лимит:</label>
+                    <input type="number" id="feed-limit" value="10" min="1" max="50">
+                </div>
+                <button onclick="getFeed()">Получить ленту</button>
+                <div id="result-feed" class="result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Список стран</h2>
+                <button onclick="getCountries()">Получить список стран</button>
+                <div id="result-countries" class="result"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Travel Online API • Версия 1.0 • <span id="api-status">Статус: проверка...</span></p>
+            <p>Токен: <span id="token-status">не установлен</span></p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let token = localStorage.getItem('travel_token') || '';
+        let currentUserId = localStorage.getItem('travel_user_id') || '';
+
+        // Обновление времени
+        function updateTime() {
+            document.getElementById('current-time').textContent = new Date().toLocaleString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Управление табами
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Общая функция запроса
+        async function makeRequest(url, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (token) {
+                options.headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}${url}`, options);
+                const result = await response.json();
+
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: result,
+                    headers: response.headers
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    status: 0,
+                    data: { error: error.message }
+                };
+            }
+        }
+
+        // Отображение результата
+        function displayResult(elementId, result, title = '') {
+            const element = document.getElementById(elementId);
+            const statusClass = result.success ? 'success' : 'error';
+
+            let html = '';
+            if (title) {
+                html += `<h4>${title}</h4>`;
+            }
+
+            html += `<div class="response-info">
+                <span class="${statusClass}">Статус: ${result.status}</span>
+                <span>${result.success ? '✅ Успешно' : '❌ Ошибка'}</span>
+            </div>`;
+
+            html += `<pre>${JSON.stringify(result.data, null, 2)}</pre>`;
+            element.innerHTML = html;
+        }
+
+        // Тест эндпоинтов
+        async function testEndpoint(endpoint, method = 'GET') {
+            const result = await makeRequest(endpoint, method);
+            displayResult(`result-${endpoint.split('/').pop()}`, result, `${method} ${endpoint}`);
+        }
+
+        // Регистрация
+        async function register() {
+            const data = {
+                login: document.getElementById('reg-login').value || `user_${Date.now()}`,
+                email: document.getElementById('reg-email').value || `test_${Date.now()}@example.com`,
+                password: document.getElementById('reg-password').value || 'password123',
+                name: document.getElementById('reg-name').value || 'Тестовый пользователь',
+                country: document.getElementById('reg-country').value || 'Россия'
+            };
+
+            const result = await makeRequest('/auth/register', 'POST', data);
+            displayResult('result-register', result, 'Регистрация');
+
+            if (result.success && result.data.token) {
+                token = result.data.token;
+                currentUserId = result.data.user.id;
+                localStorage.setItem('travel_token', token);
+                localStorage.setItem('travel_user_id', currentUserId);
+                updateTokenStatus();
+                alert('✅ Регистрация успешна! Токен сохранён.');
+            }
+        }
+
+        // Вход
+        async function login() {
+            const data = {
+                login: document.getElementById('login-login').value || 'test_user',
+                password: document.getElementById('login-password').value || 'password123'
+            };
+
+            const result = await makeRequest('/auth/login', 'POST', data);
+            displayResult('result-login', result, 'Вход');
+
+            if (result.success && result.data.token) {
+                token = result.data.token;
+                currentUserId = result.data.user.id;
+                localStorage.setItem('travel_token', token);
+                localStorage.setItem('travel_user_id', currentUserId);
+                updateTokenStatus();
+                alert('✅ Вход успешен! Токен сохранён.');
+            }
+        }
+
+        // Создание путешествия
+        async function createTravel() {
+            if (!token) {
+                alert('⚠️ Сначала войдите или зарегистрируйтесь!');
+                showTab('auth');
+                return;
+            }
+
+            const data = {
+                title: document.getElementById('travel-title').value || `Путешествие ${new Date().toLocaleDateString()}`,
+                description: document.getElementById('travel-description').value || 'Описание путешествия',
+                country: document.getElementById('travel-country').value || 'Россия',
+                type: document.getElementById('travel-type').value,
+                is_public: true,
+                start_date: '2024-06-01',
+                end_date: '2024-06-10',
+                budget: 50000
+            };
+
+            const result = await makeRequest('/travels', 'POST', data);
+            displayResult('result-travel-create', result, 'Создание путешествия');
+        }
+
+        // Мои путешествия
+        async function getMyTravels() {
+            if (!token) {
+                alert('⚠️ Сначала войдите или зарегистрируйтесь!');
+                showTab('auth');
+                return;
+            }
+
+            const result = await makeRequest('/travels/my', 'GET');
+            displayResult('result-my-travels', result, 'Мои путешествия');
+        }
+
+        // Лента
+        async function getFeed() {
+            const country = document.getElementById('feed-country').value;
+            const limit = document.getElementById('feed-limit').value;
+            let url = '/feed';
+
+            const params = new URLSearchParams();
+            if (country) params.append('country', country);
+            if (limit) params.append('limit', limit);
+
+            if (params.toString()) {
+                url += `?${params.toString()}`;
+            }
+
+            const result = await makeRequest(url, 'GET');
+            displayResult('result-feed', result, 'Лента путешествий');
+        }
+
+        // Список стран
+        async function getCountries() {
+            const result = await makeRequest('/feed/countries', 'GET');
+            displayResult('result-countries', result, 'Список стран');
+        }
+
+        // Обновление статуса токена
+        function updateTokenStatus() {
+            document.getElementById('token-status').textContent =
+                token ? 'установлен' : 'не установлен';
+            document.getElementById('token-status').style.color =
+                token ? '#4CAF50' : '#f44336';
+        }
+
+        // Проверка статуса API при загрузке
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                document.getElementById('api-status').innerHTML =
+                    `<span class="success">✅ ${data.message}</span>`;
+            } catch (error) {
+                document.getElementById('api-status').innerHTML =
+                    `<span class="error">❌ API недоступно</span>`;
+            }
+        }
+
+        // Инициализация
+        window.onload = function () {
+            updateTokenStatus();
+            checkApiStatus();
+            testEndpoint('/health', 'GET');
+        };
+    </script>
+</body>
+
+</html>
